@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// singleton class ObjectManenger
@@ -22,10 +23,15 @@ public class ObjectMgr
     //(-∞,0]非法id，(0,100)系统静态id，[100,+∞]动态分配id 
     private int _curId = 100;
 
-    private Dictionary<int, EntityBase> _objDict;
+    private Dictionary<int, EntityBase> _objDict = new Dictionary<int, EntityBase>();
 
     public void RegisterEntity(EntityBase obj)
     {
+        if(obj == null)
+        {
+            MonoBehaviour.print("error: null obj");
+            return;
+        }
         _objDict.Add(obj.Id, obj);  
     }
 

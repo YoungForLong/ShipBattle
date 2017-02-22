@@ -16,7 +16,7 @@ public class MsgDispatcher
     }
     #endregion
 
-    private SortedList<long,Telegram> _msgQueue;
+    private SortedList<long, Telegram> _msgQueue = new SortedList<long, Telegram>();
 
     protected void Discharge(Communicator receiver, Telegram msg)
     {

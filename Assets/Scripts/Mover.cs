@@ -9,7 +9,6 @@ public class Mover : MonoBehaviour
     public bool Active;
 
     public float Speed;
-    public float RSpeed;
     public int Target;
     public Vector2 AimPos;
 
@@ -17,24 +16,23 @@ public class Mover : MonoBehaviour
     public MyFunc OnArrive = null;
 
     Rigidbody _rigidbody = null;
+    private Vector2 _heading = new Vector2(0, 0);
 
     //update func
     void moveUpdate()
     {
-        var movement = (new Vector3(AimPos.x, 0, AimPos.y) - transform.position).normalized
-            * Speed * Time.deltaTime;
+        var movement = new Vector3(_heading.x, 0, _heading.y);
 
-        
+        movement = movement.normalized * Speed * Time.deltaTime;
+
+        _rigidbody.MovePosition(transform.position + movement);
     }
 
-    bool turningUpdate()
+    void turningUpdate()
     {
-        //近似处理
-        if(AimPos.x != CommonEnum.illegal_aim)
-        {
-            
-        }
-        return false;
+        var toTarget = new Vector3(_heading.x, 0, _heading.y);
+        Quaternion toTarget_q = Quaternion.LookRotation(toTarget);
+        _rigidbody.MoveRotation(Quaternion.Lerp(transform.rotation, toTarget_q, 0.1f));
     }
 
     public void MoveTo(Vector2 aimPos)
@@ -44,24 +42,24 @@ public class Mover : MonoBehaviour
 
     public void Stop()
     {
-        AimPos = new Vector2(CommonEnum.illegal_aim, CommonEnum.illegal_aim);
+        AimPos.Set(CommonEnum.illegal_aim, CommonEnum.illegal_aim);
         Target = CommonEnum.illegal_id;
+        _heading.Set(0, 0);
     }
 
     public void MoveTowards(Vector2 heading)
     {
-        MoveTo(transform.position + new Vector3(heading.x * Speed, 0, heading.y));
+        _heading = heading;
     }
 
     //set init datas
     public void Awake()
     {
-        transform.position = new Vector3(0, 0, 0);
-        transform.rotation = Quaternion.LookRotation(new Vector3(1, 0, 0));
+        transform.position = new Vector3(0, 1, 0);
+        //transform.rotation = Quaternion.LookRotation(new Vector3(270, 0, 0));
         Target = CommonEnum.illegal_id;
         AimPos = new Vector2(CommonEnum.illegal_aim, CommonEnum.illegal_aim);
         OnArrive = null;
-        RSpeed = 0.0f;
 
         _rigidbody = GetComponent<Rigidbody>();
 
@@ -70,7 +68,29 @@ public class Mover : MonoBehaviour
 
     public void FixedUpdate()
     {
-        
+        if (AimPos.x != CommonEnum.illegal_aim)
+        {
+            _heading = AimPos - new Vector2(transform.position.x, transform.position.z);
+        }
+        else if(Target != CommonEnum.illegal_id)
+        {
+            Vector3 targetPos = ObjectMgr.Instance().GetEnttiyById(Target).transform.position;
+            Vector2 target2D = new Vector2(targetPos.x, targetPos.z);
+            _heading = target2D - new Vector2(transform.position.x, transform.position.z);
+        }
+
+        if (_heading.magnitude < 0.01f)
+        {
+            Stop();
+            if (OnArrive != null)
+                OnArrive();
+        }
+
+        if (_heading != new Vector2(0, 0))
+        {
+            turningUpdate();
+            moveUpdate();
+        }
     }
 
     protected void LoadMovingConfig()

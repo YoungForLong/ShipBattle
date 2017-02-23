@@ -74,7 +74,7 @@ public class Mover : MonoBehaviour
         }
         else if(Target != CommonEnum.illegal_id)
         {
-            Vector3 targetPos = ObjectMgr.Instance().GetEnttiyById(Target).transform.position;
+            Vector3 targetPos = EntityMgr.Instance().GetEnttiyById(Target).transform.position;
             Vector2 target2D = new Vector2(targetPos.x, targetPos.z);
             _heading = target2D - new Vector2(transform.position.x, transform.position.z);
         }

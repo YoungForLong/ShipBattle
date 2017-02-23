@@ -7,7 +7,7 @@ public struct BattleConfig
     public int damage;
     public int armour;
     public float attackDuration;
-    public int attackLimit;
+    public float attackLimit;
 }
 
 public class Battle : MonoBehaviour {
@@ -18,13 +18,13 @@ public class Battle : MonoBehaviour {
     int _damage;
     int _armour;
     float _attackDuration;
-    int _attackLimit;
+    float _attackLimit;
 
     float _attackCoolDown;
 
     int _bonusFlag;
 
-    ObjectType _bulletType;
+    EntityType _bulletType;
 
     #region test
     void SimiOriginInfo()
@@ -50,7 +50,7 @@ public class Battle : MonoBehaviour {
         _attackCoolDown = 0;
         _bonusFlag = 0x0001;
 
-        _bulletType = ObjectType.stone_bullet;
+        _bulletType = EntityType.stone_bullet;
     }
 
     private void Update()
@@ -61,25 +61,49 @@ public class Battle : MonoBehaviour {
 
     public bool NormalAttack()
     {
-        
+        var nearestEnt = EntityMgr.Instance().getNearestEnt(GetComponent<EntityBase>());
+
+        NormalAttack(nearestEnt.Id);
 
         return false;
     }
 
     public bool NormalAttack(int targetId)
     {
-        if(_attackCoolDown <=0)
+        if(_attackCoolDown <= 0)
         {
-            AttackInfo info = new AttackInfo(ObjectType.stone_bullet);
-            info.heading = transform.rotation;
-            info.position = transform.position;
-            info.speed = 20;
+            AttackInfo info = new AttackInfo(EntityType.stone_bullet);
+
+            var bulletPos = transform.FindChild("BulletPos").position;
+            info.position = new Vector2(bulletPos.x, bulletPos.z);
+
+            var targetPos = EntityMgr.Instance().GetEnttiyById(targetId).transform.position;
+
+            var curPos = transform.position;
+            var mid = (targetPos + curPos) / 2;
+            var toTarget = targetPos - curPos;
+
+            float height = Mathf.Min(
+                Mathf.Max(toTarget.magnitude - CommonEnum.min_dist, 0.01f)
+                / CommonEnum.averange_dist,
+                1) * CommonEnum.max_height;
+
+            mid.Set(mid.x, height, mid.z);
+            print(height);
+
+            info.heading = mid - curPos;
+
+            //GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            //go.transform.position = info.position;
+
+            info.speed = 40;
             info.source = GetComponent<EntityBase>().Id;
             info.target = targetId;
             info.typeFlag = _bonusFlag;
             info.type = _bulletType;
 
             Bullet.Create(info);
+            _attackCoolDown = _attackDuration;
         }
 
         return false;

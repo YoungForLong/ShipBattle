@@ -28,7 +28,7 @@ public class MsgDispatcher
 
     public void AddMsg(long delay,int sender,int receiver,MsgType msgtype,object extrainfo)
     {
-        var ent_receiver = ObjectMgr.Instance().GetEnttiyById(receiver);
+        var ent_receiver = EntityMgr.Instance().GetEnttiyById(receiver);
 
         Telegram tel = new Telegram((long)(UnityEngine.Time.time * 1000) + delay, sender, receiver, msgtype, extrainfo);
 
@@ -46,7 +46,7 @@ public class MsgDispatcher
             if (current.Value.dispatchTime > (UnityEngine.Time.time * 1000))
                 break;
 
-            EntityBase ent = ObjectMgr.Instance().GetEnttiyById(current.Value.receiver);
+            EntityBase ent = EntityMgr.Instance().GetEnttiyById(current.Value.receiver);
             Communicator receiver = ent.GetComponent<Communicator>();
 
             Discharge(receiver, current.Value);

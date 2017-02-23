@@ -1,20 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EntityBase: MonoBehaviour {
-    public int Id { set; get; }
-    public ObjectType Type { set; get; }
+    protected int _id;
+    public int Id {
+        get { return _id; }
+    }
+    public EntityType Type { set; get; }
 
-    public EntityBase(int id) { Id = id; }
+    public EntityBase(int id) { _id = id; }
+
+    /// <summary>
+    /// 类型树
+    /// 存放的是父节点
+    /// </summary>
+    public static Dictionary<EntityType, EntityType> TypeTree = new Dictionary<EntityType, EntityType>()
+    {
+        { EntityType.bullet,EntityType.stone_bullet},
+    };
+
+    public bool IsBelongTo(EntityType ty)
+    {
+        //test
+        return ty == Type;
+    }
 
     private void Awake()
     {
-        this.Id = ObjectMgr.Instance().GetNewId();
-        ObjectMgr.Instance().RegisterEntity(this);
+        //test
+        Type = EntityType.ship;
+
+        this._id = EntityMgr.Instance().GetNewId();
+        EntityMgr.Instance().RegisterEntity(this);
     }
 
     private void OnDestroy()
     {
-        ObjectMgr.Instance().RemoveEntity(this);
+        EntityMgr.Instance().RemoveEntity(this);
     }
 }

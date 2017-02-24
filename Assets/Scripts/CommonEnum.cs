@@ -65,10 +65,10 @@ public static class CommonEnum
     public const long next_frame_delay = 1;
 
     //collider
-    public const float ship_collider_radius = 2;
+    public const float ship_collider_radius = 2.0f;
 
     //dist
-    public const float averange_dist = 100;
-    public const float max_height = 80;
-    public const float min_dist = 4;
+    public const float averange_dist = 60.0f;
+    public const float max_height = 40.0f;
+    public const float min_dist = 4.0f;
 }

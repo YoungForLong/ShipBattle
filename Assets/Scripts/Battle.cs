@@ -75,28 +75,16 @@ public class Battle : MonoBehaviour {
             AttackInfo info = new AttackInfo(EntityType.stone_bullet);
 
             var bulletPos = transform.FindChild("BulletPos").position;
-            info.position = new Vector2(bulletPos.x, bulletPos.z);
+            info.position = bulletPos;
 
-            var targetPos = EntityMgr.Instance().GetEnttiyById(targetId).transform.position;
+            Vector3 targetPos = EntityMgr.Instance().GetEnttiyById(targetId).transform.FindChild("AttackPos").position;
 
-            var curPos = transform.position;
-            var mid = (targetPos + curPos) / 2;
-            var toTarget = targetPos - curPos;
+            Vector3 curPos = transform.position;
+            Vector3 toTarget = targetPos - curPos;
 
-            float height = Mathf.Min(
-                Mathf.Max(toTarget.magnitude - CommonEnum.min_dist, 0.01f)
-                / CommonEnum.averange_dist,
-                1) * CommonEnum.max_height;
+            var speed = 40;
+            info.time = toTarget.magnitude / speed;
 
-            mid.Set(mid.x, height, mid.z);
-            print(height);
-
-            info.heading = mid - curPos;
-
-            //GameObject go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            //go.transform.position = info.position;
-
-            info.speed = 40;
             info.source = GetComponent<EntityBase>().Id;
             info.target = targetId;
             info.typeFlag = _bonusFlag;

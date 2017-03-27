@@ -63,9 +63,8 @@ public class TrackInfo : MonoBehaviour
         float p = Mathf.Clamp01(timePercent);
         p = Mathf.Clamp01(SpeedCurve.Evaluate(p));
         Vector3 offsetPos = new Vector3(XMoveCurve.Evaluate(p),
-                                         YMoveCurve.Evaluate(p),
+                                         YMoveCurve.Evaluate(p) * (end - start).magnitude,
                                          ZMoveCurve.Evaluate(p));
-        print(offsetPos);
 
         // 加和轨迹与偏移
         return offsetPos + Vector3.Lerp(start, end, p);

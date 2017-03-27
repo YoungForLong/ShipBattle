@@ -41,6 +41,12 @@ public enum AttackBonus
     //to do, more types
 };
 
+public enum PolyType
+{
+    obstacle,
+    sea
+}
+
 public static class CommonEnum
 {
     //math

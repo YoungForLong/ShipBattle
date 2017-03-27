@@ -70,7 +70,7 @@ public class Controller : MonoBehaviour {
         var mover = GetComponent<Mover>();
 
         //auto attack
-        GetComponent<Battle>().NormalAttack();
+        //GetComponent<Battle>().NormalAttack();
 
         switch (_curKeyState)
         {

@@ -55,7 +55,7 @@ public class Mover : MonoBehaviour
     //set init datas
     public void Awake()
     {
-        transform.position = new Vector3(0, 1, 0);
+        transform.position = new Vector3(20, 1, 20);
         //transform.rotation = Quaternion.LookRotation(new Vector3(270, 0, 0));
         Target = CommonEnum.illegal_id;
         AimPos = new Vector2(CommonEnum.illegal_aim, CommonEnum.illegal_aim);

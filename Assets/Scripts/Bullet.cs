@@ -143,7 +143,7 @@ public class Bullet : MonoBehaviour {
         {
             if(_restTime < 0)
             {
-                //TimeOut();
+                TimeOut();
                 return;
             }
 
